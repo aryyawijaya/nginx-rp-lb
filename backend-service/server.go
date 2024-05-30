@@ -29,7 +29,7 @@ func usage() {
 
 var (
 	greeting = flag.String("g", "Hello", "Greet with `greeting`")
-	addr     = flag.String("addr", "localhost:8080", "address to serve")
+	addr     = flag.String("addr", ":8080", "address to serve")
 )
 
 func main() {

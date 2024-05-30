@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # update OS
 sudo apt -y update
 
@@ -9,8 +11,8 @@ fi
 # install nginx
 sudo apt install -y nginx
 
-# set up as reverse proxy
-sudo cat << EOF > /etc/nginx/sites-available/backend-server-1
+# set up as web server
+sudo sh -c 'cat << EOF > /etc/nginx/sites-available/backend-server-1
 server {
     server_name backend-server-1 192.168.1.7;
 
@@ -18,10 +20,10 @@ server {
         proxy_pass http://localhost:8080;
     }
 }
-EOF
+EOF'
 
 if [[ $? -ne 0 ]]; then
-	echo "failed set up reverse proxy"
+	echo "failed set up web server"
 	exit 1
 fi
 
