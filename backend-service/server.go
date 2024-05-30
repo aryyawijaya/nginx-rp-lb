@@ -1,82 +1,43 @@
-// Copyright 2023 The Go Authors. All rights reserved.
-// Use of this source code is governed by a BSD-style
-// license that can be found in the LICENSE file.
-
-// Hello is a simple hello, world demonstration web server.
-//
-// It serves version information on /version and answers
-// any other request like /name by saying "Hello, name!".
-//
-// See golang.org/x/example/outyet for a more sophisticated server.
 package main
 
 import (
-	"flag"
+	"encoding/json"
 	"fmt"
-	"html"
-	"log"
 	"net/http"
 	"os"
-	"runtime/debug"
-	"strings"
-)
-
-func usage() {
-	fmt.Fprintf(os.Stderr, "usage: helloserver [options]\n")
-	flag.PrintDefaults()
-	os.Exit(2)
-}
-
-var (
-	greeting = flag.String("g", "Hello", "Greet with `greeting`")
-	addr     = flag.String("addr", ":8080", "address to serve")
 )
 
 func main() {
-	// Parse flags.
-	flag.Usage = usage
-	flag.Parse()
-
-	// Parse and validate arguments (none).
-	args := flag.Args()
-	if len(args) != 0 {
-		usage()
+	http.HandleFunc("/", handleAPIRequest)
+	port := 8080 // Change this to your desired port
+	fmt.Printf("Server listening on port %d...\n", port)
+	err := http.ListenAndServe(fmt.Sprintf(":%d", port), nil)
+	if err != nil {
+		fmt.Println("Error starting server:", err)
 	}
-
-	// Register handlers.
-	// All requests not otherwise mapped with go to greet.
-	// /version is mapped specifically to version.
-	http.HandleFunc("/", greet)
-	http.HandleFunc("/version", version)
-
-	log.Printf("serving http://%s\n", *addr)
-	log.Fatal(http.ListenAndServe(*addr, nil))
 }
 
-func version(w http.ResponseWriter, r *http.Request) {
-	info, ok := debug.ReadBuildInfo()
-	if !ok {
-		http.Error(w, "no build information available", 500)
-		return
-	}
-
-	fmt.Fprintf(w, "<!DOCTYPE html>\n<pre>\n")
-	fmt.Fprintf(w, "%s\n", html.EscapeString(info.String()))
-}
-
-func greet(w http.ResponseWriter, r *http.Request) {
-	name := strings.Trim(r.URL.Path, "/")
-	if name == "" {
-		name = "Gopherr"
-	}
-
+func handleAPIRequest(w http.ResponseWriter, r *http.Request) {
+	// Simulate some data (replace with your actual data)
 	hostname, err := os.Hostname()
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(1)
 	}
+	responseData := map[string]interface{}{
+		"message":  "Hello, world!",
+		"hostname": hostname,
+		"status":   "success",
+	}
 
-	fmt.Fprintf(w, "<!DOCTYPE html>\n")
-	fmt.Fprintf(w, "%s, %s!\n<pre>\n", *greeting, html.EscapeString(name))
-	fmt.Fprintf(w, "hostname: %s\n", hostname)
+	// Set response headers
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+
+	// Encode data as JSON and write to response
+	err = json.NewEncoder(w).Encode(responseData)
+	if err != nil {
+		http.Error(w, "Error encoding JSON response", http.StatusInternalServerError)
+		return
+	}
 }
