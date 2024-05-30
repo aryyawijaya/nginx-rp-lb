@@ -20,6 +20,7 @@ fi
 sudo sh -c 'cat << EOF > /etc/nginx/sites-available/default
 upstream backend {
 	server 192.168.1.7:8080; # backend server 1
+	server 192.168.1.6:8080; # backend server 2
 }
 
 server {
