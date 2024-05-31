@@ -56,18 +56,23 @@ if [[ $? -ne 0 ]]; then
 fi
 
 # set up load balancer
-sudo sh -c 'cat << EOF > /etc/nginx/sites-available/default
+sudo sh -c "cat << EOF > /etc/nginx/sites-available/default
 upstream backend {
-	server 192.168.1.7:8080; # backend server 1
-	server 192.168.1.6:8080; # backend server 2
+        server 192.168.1.7:8080; # backend server 1
+        server 192.168.1.8:8080; # backend server 2
 }
 
 server {
-	location / {
-		proxy_pass http://backend;
-	}
+        # set up CORS
+        # allow requests from frontend
+        add_header 'Access-Control-Allow-Origin' 'http://192.168.1.9';
+        add_header 'Access-Control-Allow-Methods' 'GET, POST, OPTIONS';
+
+        location / {
+                proxy_pass http://backend;
+        }
 }
-EOF'
+EOF"
 
 if [[ $? -ne 0 ]]; then
 	echo "failed create load balancer config file"
