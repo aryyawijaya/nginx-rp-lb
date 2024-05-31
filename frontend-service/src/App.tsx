@@ -6,7 +6,7 @@ function App() {
 
   const handleApiCall = async () => {
     try {
-      const response = await fetch('http://192.168.1.5'); // Replace with your actual API URL
+      const response = await fetch('http://192.168.1.6'); // Replace with your actual API URL
       if (response.ok) {
         const data = await response.json();
         setApiResponse(JSON.stringify(data, null, 2)); // Display the response as a formatted JSON string
