@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# set static IP lb server
+# set static IP backend server
 if [[ -z "$1" ]]; then
         echo "must set ip address"
         exit 1
