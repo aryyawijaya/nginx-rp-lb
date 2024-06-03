@@ -39,7 +39,11 @@ startup-rp-server.sh 192.168.1.10/24 192.168.1.1
 ```
 
 ## Demo
+- Access the reverse proxy (http://192.168.1.10) as the access point from internet:
+
 ![demo-1](https://github.com/aryyawijaya/nginx-rp-lb/blob/main/demo-1.png)
+
+- Try click "Call API" button twice to check wheter the load balancer is working to distribute the traffic:
 
 ![demo-2](https://github.com/aryyawijaya/nginx-rp-lb/blob/main/demo-2.png)
 
