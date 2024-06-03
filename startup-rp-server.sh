@@ -55,28 +55,21 @@ if [[ $? -ne 0 ]]; then
 	exit 1
 fi
 
-# set up load balancer
+# set up reverse proxy
 sudo sh -c "cat << EOF > /etc/nginx/sites-available/default
-upstream backend {
-        server 192.168.1.7:8080; # backend server 1
-        server 192.168.1.8:8080; # backend server 2
+upstream frontend {
+        server 192.168.1.9; # frontend server 1
 }
 
 server {
-        # set up CORS
-        # allow requests from reverse proxy
-	add_header 'Access-Control-Allow-Origin' 'http://192.168.1.10';
-
-        add_header 'Access-Control-Allow-Methods' 'GET, POST, OPTIONS';
-
         location / {
-                proxy_pass http://backend;
+                proxy_pass http://frontend;
         }
 }
 EOF"
 
 if [[ $? -ne 0 ]]; then
-	echo "failed create load balancer config file"
+	echo "failed create reverse proxy config file"
 	exit 1
 fi
 
